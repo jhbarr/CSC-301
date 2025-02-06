@@ -1,0 +1,8 @@
+# Ignore fiels with .dat extension 
+*.dat
+
+# Ignore the plots with .png extension
+*.png
+
+# Ignore executables
+*.exe
