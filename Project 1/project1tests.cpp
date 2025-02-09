@@ -3,7 +3,7 @@
  * project1tests.cpp
  * Spring 2025
  * Eric A. Autry
- * 09/08/22
+ * 02/07/25
  */
 
 #include "project1tests.hpp"
@@ -210,6 +210,23 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
     std::default_random_engine rnd{1};
     std::uniform_real_distribution<double> dist(0, 1);
 
+    // First perform numTrials sorts as burn-in.
+    // Use the largest size for the burn-in.
+    for ( int burn=0; burn<numTrials; burn++ ) {
+        // Create the array for the burn-in and time the sort.
+        vector<double> bVec(Nend);
+        for ( int j=0; j<Nend; j++ ) {
+            if (preSorted) {
+                bVec[j] = j;
+            } else {
+                bVec[j] = dist(rnd);
+            }
+        }
+        auto start = chrono::high_resolution_clock::now();
+        sortFunc(bVec);
+        auto stop = chrono::high_resolution_clock::now();
+    }
+
     // Create an array of the array lengths to time and an array to store the 
     // results of the timed trials.
     vector<int> nVals(1+(Nend-Nstart)/Nstep);
@@ -224,7 +241,7 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
         int n = Nstart + i*Nstep;
         nVals[i] = n;
 
-        // Loop over the trials.
+        // Now we can loop over the actual trials.
         for ( int tInd=0; tInd<numTrials; tInd++ ) {
             // Create a pre-sorted or random array of the correct length.
             vector<double> arrayToSort(n);
@@ -298,6 +315,10 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
  */
 int main(int argc, char* argv[]) {
 
+    /*
+     * TESTING
+     */
+
     cout << "Testing selectionSort" << endl << endl;
     testingSuite(&selectionSort);
     cout << endl;
@@ -318,36 +339,141 @@ int main(int argc, char* argv[]) {
     testingSuite(&quickSort);
     cout << endl;
 
+    /*
+     * TIMING Selection Sort
+     */
+
+    // Timing Trials for _SELECTION_ Sort on *RANDOM* Data.
+
+    int Nstart = 500;   // the smallest input size to test.
+    int Nend = 4000;    // the largest input size to test.
+    int Nstep = 100;    // the stride between consecutive input sizes.
+    int numTrials = 30; // the number of trials to average across.
+
     cout << "Timing selectionSort" << endl << endl;
-    measureTime(&selectionSort, 100, 4000, 100, false, 30, true, "ss_rand.dat");
-    cout << endl;
-    measureTime(&selectionSort, 100, 4000, 100, true, 30, true, "ss_sort.dat");
+    measureTime(&selectionSort, Nstart, Nend, Nstep, false, numTrials, true, 
+                "ss_rand.dat");
     cout << endl;
 
-    cout << "Timing insertionSort" << endl << endl;
-    measureTime(&insertionSort, 100, 4000, 100, false, 30, true, "is_rand.dat");
+    // Timing Trials for _SELECTION_ Sort on *SORTED* Data.
+
+    Nstart = 1000;   // the smallest input size to test.
+    Nend = 8000;    // the largest input size to test.4000
+    Nstep = 500;    // the stride between consecutive input sizes.200
+    numTrials = 30; // the number of trials to average across.
+
+    measureTime(&selectionSort, Nstart, Nend, Nstep, true, numTrials, true, 
+                "ss_sort.dat");
     cout << endl;
-    measureTime(&insertionSort, 2000, 40000, 1000, true, 30, true, 
+
+    /*
+     * TIMING Insertion Sort
+     */
+
+    // Timing Trials for _Insertion_ Sort on *RANDOM* Data.
+
+    Nstart = 500;   // the smallest input size to test.
+    Nend = 4000;    // the largest input size to test.
+    Nstep = 100;    // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
+    cout << "Timing insertionSort" << endl << endl;
+    measureTime(&insertionSort, Nstart, Nend, Nstep, false, numTrials, true, 
+                "is_rand.dat");
+    cout << endl;
+
+    // Timing Trials for _Insertion_ Sort on *SORTED* Data.
+
+    Nstart = 8000;  // the smallest input size to test.
+    Nend = 40000;   // the largest input size to test.
+    Nstep = 2000;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
+    measureTime(&insertionSort, Nstart, Nend, Nstep, true, numTrials, true, 
                 "is_sort.dat");
     cout << endl;
 
+    /*
+     * TIMING Bubble Sort
+     */
+
+    // Timing Trials for _BUBBLE_ Sort on *RANDOM* Data.
+
+    Nstart = 500;   // the smallest input size to test.
+    Nend = 4000;    // the largest input size to test.
+    Nstep = 100;    // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
     cout << "Timing bubbleSort" << endl << endl;
-    measureTime(&bubbleSort, 100, 4000, 100, false, 30, true, "bs_rand.dat");
+    measureTime(&bubbleSort, Nstart, Nend, Nstep, false, numTrials, true, 
+                "bs_rand.dat");
     cout << endl;
-    measureTime(&bubbleSort, 4000, 40000, 2000, true, 30, true, "bs_sort.dat");
+
+    // Timing Trials for _BUBBLE_ Sort on *SORTED* Data.
+
+    Nstart = 8000;  // the smallest input size to test.
+    Nend = 40000;   // the largest input size to test.
+    Nstep = 2000;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
+    measureTime(&bubbleSort, Nstart, Nend, Nstep, true, numTrials, true, 
+                "bs_sort.dat");
     cout << endl;
+
+    /*
+     * TIMING Merge Sort
+     */
+
+    // Timing Trials for _MERGE_ Sort on *RANDOM* Data.
+
+    Nstart = 2000;  // the smallest input size to test.
+    Nend = 40000;   // the largest input size to test.
+    Nstep = 1000;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
 
     cout << "Timing mergeSort" << endl << endl;
-    measureTime(&mergeSort, 2000, 40000, 1000, false, 30, false, "ms_rand.dat");
+    measureTime(&mergeSort, Nstart, Nend, Nstep, false, numTrials, false, 
+                "ms_rand.dat");
     cout << endl;
-    measureTime(&mergeSort, 2000, 40000, 1000, true, 30, false, "ms_sort.dat");
+
+    // Timing Trials for _MERGE_ Sort on *SORTED* Data.
+
+    Nstart = 2000;  // the smallest input size to test.
+    Nend = 40000;   // the largest input size to test.
+    Nstep = 1000;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
+    measureTime(&mergeSort, Nstart, Nend, Nstep, true, numTrials, false, 
+                "ms_sort.dat");
     cout << endl;
+
+    /*
+     * TIMING Quick Sort
+     */
+
+    // Timing Trials for _QUICK_ Sort on *RANDOM* Data.
+
+    Nstart = 2000;  // the smallest input size to test.
+    Nend = 40000;   // the largest input size to test.
+    Nstep = 1000;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
 
     cout << "Timing quickSort" << endl << endl;
-    measureTime(&quickSort, 2000, 40000, 1000, false, 30, false, "qs_rand.dat");
-    cout << endl;
-    measureTime(&quickSort, 100, 4000, 100, true, 30, true, "qs_sort.dat");
+    measureTime(&quickSort, Nstart, Nend, Nstep, false, numTrials, false, 
+                "qs_rand.dat");
     cout << endl;
 
+    // Timing Trials for _QUICK_ Sort on *SORTED* Data.
+
+    Nstart = 500;  // the smallest input size to test.
+    Nend = 5000;   // the largest input size to test.
+    Nstep = 200;   // the stride between consecutive input sizes.
+    numTrials = 30; // the number of trials to average across.
+
+    measureTime(&quickSort, Nstart, Nend, Nstep, true, numTrials, true, 
+                "qs_sort.dat");
+    cout << endl;
+
+    // DONE!!!
     return 0;
 }
