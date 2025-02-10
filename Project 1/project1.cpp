@@ -132,6 +132,7 @@ vector<double> merge(vector<double> array1, vector<double> array2)
 {
     vector<double> result;
 
+    // Add the next smallest element from either list
     while (!array1.empty() && !array2.empty())
     {
         if (array1[0] < array2[0])
@@ -145,6 +146,8 @@ vector<double> merge(vector<double> array1, vector<double> array2)
             array2.erase(array2.begin());
         }
     }
+
+    // Once one of the arrays are empty, add the rest of the other one to the result array
 
     // If array1 is empty
     if (array1.empty())
@@ -175,9 +178,11 @@ vector<double> merge(vector<double> array1, vector<double> array2)
  */
 void mergeSort(vector<double> &arrayToSort)
 {
+    // Return if the array is a singleton
     if (arrayToSort.size() == 1)
         return;
 
+    // Swap the two elements if they are out of order
     if (arrayToSort.size() == 2)
     {
         double left = arrayToSort[0];
@@ -188,8 +193,11 @@ void mergeSort(vector<double> &arrayToSort)
             arrayToSort[0] = right;
             arrayToSort[1] = left;
         }
+
+        return;
     }
 
+    // Split arrayToSort into two smaller arrays
     vector<double> array1;
     vector<double> array2;
 
@@ -205,9 +213,11 @@ void mergeSort(vector<double> &arrayToSort)
         }
     }
 
+    // Recursively sort the two smaller arrays
     mergeSort(array1);
     mergeSort(array2);
 
+    // Merge the two sorted arrays and assign that to arrayToSort
     arrayToSort = merge(array1, array2);
 
     return;
@@ -222,6 +232,59 @@ void mergeSort(vector<double> &arrayToSort)
  */
 void quickSortHelper(vector<double> &arrayToSort, int i, int j)
 {
+    if ((j - i) == 1)
+    {
+        return;
+    }
+    else if ((j - i) == 2)
+    {
+        int right = arrayToSort[j - 1];
+        int left = arrayToSort[i];
+
+        if (right < left)
+        {
+            arrayToSort[j - 1] = left;
+            arrayToSort[i] = right;
+        }
+        return;
+    }
+
+    int partition_location = (i + j) / 2;
+    double partition_value = arrayToSort[partition_location];
+
+    int start = i;
+    int end = j - 1;
+    bool stop = false;
+    while (!stop)
+    {
+        while (arrayToSort[start] < partition_value)
+        {
+            start++;
+        }
+        while (arrayToSort[end] > partition_value)
+        {
+            end--;
+        }
+
+        if (arrayToSort[start] == arrayToSort[end] && arrayToSort[start] == partition_value && start != end)
+        {
+            start++;
+        }
+        else if (start == end)
+        {
+            stop = true;
+        }
+        else
+        {
+            double temp = arrayToSort[start];
+            arrayToSort[start] = arrayToSort[end];
+            arrayToSort[end] = temp;
+        }
+    }
+
+    quickSortHelper(arrayToSort, i, start);
+    quickSortHelper(arrayToSort, start, j);
+
     return;
 }
 
