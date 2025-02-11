@@ -236,20 +236,20 @@ void quickSortHelper(vector<double> &arrayToSort, int i, int j)
     {
         return;
     }
-    else if ((j - i) == 2)
-    {
-        int right = arrayToSort[j - 1];
-        int left = arrayToSort[i];
+    // else if ((j - i) == 2)
+    // {
+    //     int right = arrayToSort[j - 1];
+    //     int left = arrayToSort[i];
 
-        if (right < left)
-        {
-            arrayToSort[j - 1] = left;
-            arrayToSort[i] = right;
-        }
-        return;
-    }
+    //     if (right < left)
+    //     {
+    //         arrayToSort[j - 1] = left;
+    //         arrayToSort[i] = right;
+    //     }
+    //     return;
+    // }
 
-    int partition_location = (i + j) / 2;
+    int partition_location = i + (j - i) / 2;
     double partition_value = arrayToSort[partition_location];
 
     int start = i;
