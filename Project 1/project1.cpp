@@ -3,8 +3,8 @@
  * project1.cpp
  * Spring 2025
  *
- * Partner 1:
- * Partner 2:
+ * Partner 1: Joseph Barrows
+ * Partner 2: Deven Platt
  * Date:
  */
 
@@ -131,41 +131,60 @@ void bubbleSort(vector<double> &arrayToSort)
 vector<double> merge(vector<double> array1, vector<double> array2)
 {
     vector<double> result;
+    result.reserve(array1.size() + array2.size());
 
-    // Add the next smallest element from either list
-    while (!array1.empty() && !array2.empty())
+    int i = 0, j = 0;
+    while (i < array1.size() && j < array2.size())
     {
-        if (array1[0] < array2[0])
+        if (array1[i] < array2[j])
         {
-            result.push_back(array1[0]);
-            array1.erase(array1.begin());
+            result.push_back(array1[i++]);
         }
         else
         {
-            result.push_back(array2[0]);
-            array2.erase(array2.begin());
+            result.push_back(array2[j++]);
         }
     }
 
-    // Once one of the arrays are empty, add the rest of the other one to the result array
+    while (i < array1.size())
+        result.push_back(array1[i++]);
+    while (j < array2.size())
+        result.push_back(array2[j++]);
 
-    // If array1 is empty
-    if (array1.empty())
-    {
-        for (int i = 0; i < array2.size(); i++)
-        {
-            result.push_back(array2[i]);
-        }
-    }
+    // // Add the next smallest element from either list
+    // while (!array1.empty() && !array2.empty())
+    // {
+    //     if (array1[0] < array2[0])
+    //     {
+    //         result.push_back(array1[0]);
+    //         array1.erase(array1.begin());
+    //     }
+    //     else
+    //     {
+    //         result.push_back(array2[0]);
+    //         array2.erase(array2.begin());
+    //     }
+    // }
 
-    // If array 2 is empty
-    if (array2.empty())
-    {
-        for (int i = 0; i < array1.size(); i++)
-        {
-            result.push_back(array1[i]);
-        }
-    }
+    // // Once one of the arrays are empty, add the rest of the other one to the result array
+
+    // // If array1 is empty
+    // if (array1.empty())
+    // {
+    //     for (int i = 0; i < array2.size(); i++)
+    //     {
+    //         result.push_back(array2[i]);
+    //     }
+    // }
+
+    // // If array 2 is empty
+    // if (array2.empty())
+    // {
+    //     for (int i = 0; i < array1.size(); i++)
+    //     {
+    //         result.push_back(array1[i]);
+    //     }
+    // }
 
     return result;
 }
@@ -198,20 +217,9 @@ void mergeSort(vector<double> &arrayToSort)
     }
 
     // Split arrayToSort into two smaller arrays
-    vector<double> array1;
-    vector<double> array2;
-
-    for (int i = 0; i < arrayToSort.size(); i++)
-    {
-        if (i < arrayToSort.size() / 2)
-        {
-            array1.push_back(arrayToSort[i]);
-        }
-        else
-        {
-            array2.push_back(arrayToSort[i]);
-        }
-    }
+    int split = arrayToSort.size() / 2;
+    vector<double> array1(arrayToSort.begin(), arrayToSort.begin() + split);
+    vector<double> array2(arrayToSort.begin() + split, arrayToSort.end());
 
     // Recursively sort the two smaller arrays
     mergeSort(array1);
@@ -232,22 +240,10 @@ void mergeSort(vector<double> &arrayToSort)
  */
 void quickSortHelper(vector<double> &arrayToSort, int i, int j)
 {
-    if ((j - i) == 1)
+    if ((j - i) <= 1)
     {
         return;
     }
-    // else if ((j - i) == 2)
-    // {
-    //     int right = arrayToSort[j - 1];
-    //     int left = arrayToSort[i];
-
-    //     if (right < left)
-    //     {
-    //         arrayToSort[j - 1] = left;
-    //         arrayToSort[i] = right;
-    //     }
-    //     return;
-    // }
 
     int partition_location = i + (j - i) / 2;
     double partition_value = arrayToSort[partition_location];
@@ -282,7 +278,7 @@ void quickSortHelper(vector<double> &arrayToSort, int i, int j)
         }
     }
 
-    quickSortHelper(arrayToSort, i, start);
+    quickSortHelper(arrayToSort, i, end);
     quickSortHelper(arrayToSort, start, j);
 
     return;
