@@ -130,9 +130,12 @@ void bubbleSort(vector<double> &arrayToSort)
  */
 vector<double> merge(vector<double> array1, vector<double> array2)
 {
+    // Create an array to merge the two sorted subarrays into
     vector<double> result;
-    result.reserve(array1.size() + array2.size());
+    // result.reserve(array1.size() + array2.size());
 
+    // Add the smallest element of the two subarrays to the result array
+    // While both subarrays are not empty
     int i = 0, j = 0;
     while (i < array1.size() && j < array2.size())
     {
@@ -146,45 +149,11 @@ vector<double> merge(vector<double> array1, vector<double> array2)
         }
     }
 
+    // Add the rest of each subarray to the result array
     while (i < array1.size())
         result.push_back(array1[i++]);
     while (j < array2.size())
         result.push_back(array2[j++]);
-
-    // // Add the next smallest element from either list
-    // while (!array1.empty() && !array2.empty())
-    // {
-    //     if (array1[0] < array2[0])
-    //     {
-    //         result.push_back(array1[0]);
-    //         array1.erase(array1.begin());
-    //     }
-    //     else
-    //     {
-    //         result.push_back(array2[0]);
-    //         array2.erase(array2.begin());
-    //     }
-    // }
-
-    // // Once one of the arrays are empty, add the rest of the other one to the result array
-
-    // // If array1 is empty
-    // if (array1.empty())
-    // {
-    //     for (int i = 0; i < array2.size(); i++)
-    //     {
-    //         result.push_back(array2[i]);
-    //     }
-    // }
-
-    // // If array 2 is empty
-    // if (array2.empty())
-    // {
-    //     for (int i = 0; i < array1.size(); i++)
-    //     {
-    //         result.push_back(array1[i]);
-    //     }
-    // }
 
     return result;
 }
@@ -245,7 +214,7 @@ void quickSortHelper(vector<double> &arrayToSort, int i, int j)
         return;
     }
 
-    int partition_location = i + (j - i) / 2;
+    int partition_location = (i + j) / 2;
     double partition_value = arrayToSort[partition_location];
 
     int start = i;
@@ -286,6 +255,9 @@ void quickSortHelper(vector<double> &arrayToSort, int i, int j)
 
 /*
  * quickSort
+ * Input: vector<double> &arrayToSort - This is a pointer to a vector / array
+ * Output: None
+ * This function sorts the given array in place using the Quick Sort algorithm
  */
 void quickSort(vector<double> &arrayToSort)
 {

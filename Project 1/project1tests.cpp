@@ -17,14 +17,15 @@ using namespace std;
  *
  * This is not an exhaustive list of tests by any means, but covers the edge
  * cases for your sorting algorithms.
- * 
+ *
  * INPUTS
  * sortFunc: function pointer for alg to test.
- * 
+ *
  * OUTPUTS
  * Printed statements indicating which tests passed/failed.
  */
-void testingSuite(function<void(vector<double>&)> sortFunc) {
+void testingSuite(function<void(vector<double> &)> sortFunc)
+{
 
     // Create and seed the rng to ensure reproducibility.
     std::default_random_engine rnd{1};
@@ -38,33 +39,34 @@ void testingSuite(function<void(vector<double>&)> sortFunc) {
     testList.push_back(singletonArray);
     testNames.push_back("singleton array");
 
-    vector<double> repeatedElems{1,2,3,4,5,5,4,3,2,1};
+    vector<double> repeatedElems{1, 2, 3, 4, 5, 5, 4, 3, 2, 1};
     testList.push_back(repeatedElems);
     testNames.push_back("repeated elements");
 
-    vector<double> allRepeatedElems{2,2,2,2,2,2,2,2,2,2};
+    vector<double> allRepeatedElems{2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
     testList.push_back(allRepeatedElems);
     testNames.push_back("all repeated elements");
-    
-    vector<double> descendingOrder{10,9,8,7,6,5,4,3,2,1};
+
+    vector<double> descendingOrder{10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     testList.push_back(descendingOrder);
     testNames.push_back("descending order");
-    
-    vector<double> sortedInput{1,2,3,4,5,6,7,8,9,10};
+
+    vector<double> sortedInput{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     testList.push_back(sortedInput);
     testNames.push_back("sorted input");
-    
-    vector<double> negInputs{-1,-2,-3,-4,-5,-5,-4,-3,-2,-1};
+
+    vector<double> negInputs{-1, -2, -3, -4, -5, -5, -4, -3, -2, -1};
     testList.push_back(negInputs);
     testNames.push_back("negative inputs");
-    
-    vector<double> mixedSignInputs{1,2,3,4,5,-1,-2,-3,-4,-5,0};
+
+    vector<double> mixedSignInputs{1, 2, 3, 4, 5, -1, -2, -3, -4, -5, 0};
     testList.push_back(mixedSignInputs);
     testNames.push_back("mixed positive/negative");
-    
-    vector<double> sizePowTwoMinusOne(pow(2,6)-1);
-    vector<double> randRealNums(pow(2,6)-1);
-    for ( int i=0; i<sizePowTwoMinusOne.size(); i++ ) {
+
+    vector<double> sizePowTwoMinusOne(pow(2, 6) - 1);
+    vector<double> randRealNums(pow(2, 6) - 1);
+    for (int i = 0; i < sizePowTwoMinusOne.size(); i++)
+    {
         sizePowTwoMinusOne[i] = i;
         randRealNums[i] = dist(rnd);
     }
@@ -73,7 +75,7 @@ void testingSuite(function<void(vector<double>&)> sortFunc) {
     testNames.push_back("array of size 2^k - 1");
     testList.push_back(randRealNums);
     testNames.push_back("random real numbers");
-    
+
     // Track how many tests tried and passed.
     int tried = 0;
     int passed = 0;
@@ -82,39 +84,47 @@ void testingSuite(function<void(vector<double>&)> sortFunc) {
     auto nameItr = testNames.begin();
 
     // Loop over the tests.
-    for ( auto testItr=testList.begin(); testItr!=testList.end(); ++testItr ) {
+    for (auto testItr = testList.begin(); testItr != testList.end(); ++testItr)
+    {
 
         // Create and sort a copy for comparison later.
         vector<double> sComp((*testItr).begin(), (*testItr).end());
         sort(sComp.begin(), sComp.end());
 
         // Try to sort, but allow for errors.
-        try {
+        try
+        {
             sortFunc(*testItr);
-            if ( is_sorted( (*testItr).begin(), (*testItr).end() ) 
-                 and 
-                 equal( (*testItr).begin(), (*testItr).end(), sComp.begin() )
-               ) {
+            if (is_sorted((*testItr).begin(), (*testItr).end()) and
+                equal((*testItr).begin(), (*testItr).end(), sComp.begin()))
+            {
                 tried++;
                 passed++;
                 cout << "Succeded test " << tried << ": " << *nameItr << endl;
-            } else {
+            }
+            else
+            {
                 tried++;
                 cout << "Failed test " << tried << ": " << *nameItr << endl;
             }
-        } catch ( const exception& ex ) {
+        }
+        catch (const exception &ex)
+        {
             tried++;
             cout << "DANGER!" << endl;
             cout << "Test #" << tried << ": " << *nameItr << " threw an error!"
                  << endl;
             cout << "Error: " << typeid(ex).name() << " " << ex.what() << endl;
-        } catch (...) {
+        }
+        catch (...)
+        {
             cout << "Unknown exception caught!" << endl;
             throw; // Re-throws the exception.
         }
 
         // Increment the name iterator if not done.
-        if ( nameItr != testNames.end() ) {
+        if (nameItr != testNames.end())
+        {
             ++nameItr;
         }
     }
@@ -137,13 +147,14 @@ void testingSuite(function<void(vector<double>&)> sortFunc) {
  * OUTPUTS
  * returns the corresponding log-log slope.
  */
-double calcLogLogSlope(vector<int> &nVals, vector<double> &timings) {
+double calcLogLogSlope(vector<int> &nVals, vector<double> &timings)
+{
     // Setup the variables needed for the least squares solver.
     char TRANS = 'N';
     int M = nVals.size();
     int N = 2;
     int NRHS = 1;
-    vector<double> Amat(2*M);
+    vector<double> Amat(2 * M);
     int LDA = M;
     vector<double> Bmat(M);
     int LDB = M;
@@ -152,22 +163,29 @@ double calcLogLogSlope(vector<int> &nVals, vector<double> &timings) {
     int INFO;
 
     // Fill the matrices with the n and timing info.
-    for ( int i=0; i<M; i++ ) {
-        if ( nVals[i] > 0 ) {
+    for (int i = 0; i < M; i++)
+    {
+        if (nVals[i] > 0)
+        {
             Amat[i] = log10(nVals[i]);
-        } else {
+        }
+        else
+        {
             Amat[i] = -16; // Set to ~ machine epsilon.
         }
-        Amat[i+M] = 1;
-        if ( timings[i] > 0 ) {
+        Amat[i + M] = 1;
+        if (timings[i] > 0)
+        {
             Bmat[i] = log10(timings[i]);
-        } else {
+        }
+        else
+        {
             Bmat[i] = -16; // Set to ~ machine epsilon.
         }
     }
 
     // Perform the least squares.
-    dgels_(&TRANS, &M, &N, &NRHS, &*Amat.begin(), &LDA, &*Bmat.begin(), &LDB, 
+    dgels_(&TRANS, &M, &N, &NRHS, &*Amat.begin(), &LDA, &*Bmat.begin(), &LDB,
            &*WORK.begin(), &LWORK, &INFO);
 
     // Get the slope and output it.
@@ -176,32 +194,36 @@ double calcLogLogSlope(vector<int> &nVals, vector<double> &timings) {
 
 /* measureTime
  *
- * This function will generate lists of varying lengths and sort them using 
- * your implemented fuction. It will time these sorting operations, and store 
- * the average time across 30 trials of a particular size n, and write the 
- * results to the given filename. It will also print the slope of the log-log 
+ * This function will generate lists of varying lengths and sort them using
+ * your implemented fuction. It will time these sorting operations, and store
+ * the average time across 30 trials of a particular size n, and write the
+ * results to the given filename. It will also print the slope of the log-log
  * plots generated (if requested).
  *
  * INPUTS
  * sortFunc: function pointer for alg to test.
- * Nstart, Nend, Nstep: the start, end, and step size used to determine the 
+ * Nstart, Nend, Nstep: the start, end, and step size used to determine the
  *                      length of the arrays to time.
  * preSorted: set to true to test with only pre-sorted inputs.
  * numTrials: the number of trials to average timing data across.
  * calcSlope: set to true to calculate the slope of the log-log plots.
  * filename: the name of the file for storing the results.
- * 
+ *
  * OUTPUTS
- * The timed results will be written to file and statistics about the slope of 
+ * The timed results will be written to file and statistics about the slope of
  * the log-log plot will be printed during execution.
  */
-void measureTime(function<void(vector<double>&)> sortFunc, int Nstart, 
-                 int Nend, int Nstep, bool preSorted, int numTrials, 
-                 bool calcSlope, string filename) {
+void measureTime(function<void(vector<double> &)> sortFunc, int Nstart,
+                 int Nend, int Nstep, bool preSorted, int numTrials,
+                 bool calcSlope, string filename)
+{
     // Print info about the experiment we are about to perform.
-    if (preSorted) {
+    if (preSorted)
+    {
         cout << "Timing algorithm using only sorted data." << endl;
-    } else {
+    }
+    else
+    {
         cout << "Timing algorithm using random data." << endl;
     }
     cout << "Averaging over " << numTrials << " Trials." << endl;
@@ -212,13 +234,18 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
 
     // First perform numTrials sorts as burn-in.
     // Use the largest size for the burn-in.
-    for ( int burn=0; burn<numTrials; burn++ ) {
+    for (int burn = 0; burn < numTrials; burn++)
+    {
         // Create the array for the burn-in and time the sort.
         vector<double> bVec(Nend);
-        for ( int j=0; j<Nend; j++ ) {
-            if (preSorted) {
+        for (int j = 0; j < Nend; j++)
+        {
+            if (preSorted)
+            {
                 bVec[j] = j;
-            } else {
+            }
+            else
+            {
                 bVec[j] = dist(rnd);
             }
         }
@@ -227,28 +254,34 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
         auto stop = chrono::high_resolution_clock::now();
     }
 
-    // Create an array of the array lengths to time and an array to store the 
+    // Create an array of the array lengths to time and an array to store the
     // results of the timed trials.
-    vector<int> nVals(1+(Nend-Nstart)/Nstep);
-    vector<double> timings(1+(Nend-Nstart)/Nstep); // Default filled with 0s.
+    vector<int> nVals(1 + (Nend - Nstart) / Nstep);
+    vector<double> timings(1 + (Nend - Nstart) / Nstep); // Default filled with 0s.
 
     // A flag to ensure that the alg is sorting correctly while we time it.
     bool isCorrect = true;
 
     // Loop over the different lengths.
-    for ( int i=0; i<nVals.size(); i++ ) {
+    for (int i = 0; i < nVals.size(); i++)
+    {
         // Calculate the current n and store that value.
-        int n = Nstart + i*Nstep;
+        int n = Nstart + i * Nstep;
         nVals[i] = n;
 
         // Now we can loop over the actual trials.
-        for ( int tInd=0; tInd<numTrials; tInd++ ) {
+        for (int tInd = 0; tInd < numTrials; tInd++)
+        {
             // Create a pre-sorted or random array of the correct length.
             vector<double> arrayToSort(n);
-            for ( int j=0; j<n; j++ ) {
-                if (preSorted) {
+            for (int j = 0; j < n; j++)
+            {
+                if (preSorted)
+                {
                     arrayToSort[j] = j;
-                } else {
+                }
+                else
+                {
                     arrayToSort[j] = dist(rnd);
                 }
             }
@@ -263,14 +296,12 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
             auto stop = chrono::high_resolution_clock::now();
 
             // Get the duration in microseconds.
-            auto duration = chrono::duration_cast<chrono::microseconds>
-                            (stop - start);
+            auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
 
             // Check if the sorting was correct, and flag if not.
-            if ( not is_sorted(arrayToSort.begin(), arrayToSort.end()) 
-                 or
-                 not equal(arrayToSort.begin(),arrayToSort.end(),sComp.begin())
-               ) {
+            if (not is_sorted(arrayToSort.begin(), arrayToSort.end()) or
+                not equal(arrayToSort.begin(), arrayToSort.end(), sComp.begin()))
+            {
                 isCorrect = false;
             }
 
@@ -283,25 +314,29 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
     }
 
     // If the alg failed at some point, report it.
-    if (not isCorrect) {
+    if (not isCorrect)
+    {
         cout << "Sorting failed during timed trial!!!" << endl;
     }
 
     // Write n values and timing results to file.
     ofstream outFile;
     outFile.open(filename);
-    for ( int i=0; i<nVals.size(); i++ ) {
+    for (int i = 0; i < nVals.size(); i++)
+    {
         outFile << nVals[i] << "\t";
     }
     outFile << "\n";
-    for ( int i=0; i<timings.size(); i++ ) {
+    for (int i = 0; i < timings.size(); i++)
+    {
         outFile << timings[i] << "\t";
     }
     outFile << "\n";
     outFile.close();
 
     // Perform slope calculation if requested and report the result.
-    if (calcSlope) {
+    if (calcSlope)
+    {
         double slope = calcLogLogSlope(nVals, timings);
         cout << "Algorithm's log-log slope: " << slope << endl;
     }
@@ -310,32 +345,38 @@ void measureTime(function<void(vector<double>&)> sortFunc, int Nstart,
 }
 
 /* main
- * 
+ *
  * All of your sorting algorithms get tested and timed.
  */
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[])
+{
 
     /*
      * TESTING
      */
 
-    cout << "Testing selectionSort" << endl << endl;
+    cout << "Testing selectionSort" << endl
+         << endl;
     testingSuite(&selectionSort);
     cout << endl;
 
-    cout << "Testing insertionSort" << endl << endl;
+    cout << "Testing insertionSort" << endl
+         << endl;
     testingSuite(&insertionSort);
     cout << endl;
 
-    cout << "Testing bubbleSort" << endl << endl;
+    cout << "Testing bubbleSort" << endl
+         << endl;
     testingSuite(&bubbleSort);
     cout << endl;
 
-    cout << "Testing mergeSort" << endl << endl;
+    cout << "Testing mergeSort" << endl
+         << endl;
     testingSuite(&mergeSort);
     cout << endl;
 
-    cout << "Testing quickSort" << endl << endl;
+    cout << "Testing quickSort" << endl
+         << endl;
     testingSuite(&quickSort);
     cout << endl;
 
@@ -345,24 +386,25 @@ int main(int argc, char* argv[]) {
 
     // Timing Trials for _SELECTION_ Sort on *RANDOM* Data.
 
-    int Nstart = 500;   // the smallest input size to test.
-    int Nend = 4000;    // the largest input size to test.
-    int Nstep = 100;    // the stride between consecutive input sizes.
-    int numTrials = 30; // the number of trials to average across.
+    int Nstart = 500;  // the smallest input size to test.
+    int Nend = 4000;   // the largest input size to test.
+    int Nstep = 100;   // the stride between consecutive input sizes.
+    int numTrials = 1; // the number of trials to average across.
 
-    cout << "Timing selectionSort" << endl << endl;
-    measureTime(&selectionSort, Nstart, Nend, Nstep, false, numTrials, true, 
+    cout << "Timing selectionSort" << endl
+         << endl;
+    measureTime(&selectionSort, Nstart, Nend, Nstep, false, numTrials, true,
                 "ss_rand.dat");
     cout << endl;
 
     // Timing Trials for _SELECTION_ Sort on *SORTED* Data.
 
-    Nstart = 1000;   // the smallest input size to test.
+    Nstart = 1000;  // the smallest input size to test.
     Nend = 8000;    // the largest input size to test.4000
     Nstep = 500;    // the stride between consecutive input sizes.200
     numTrials = 30; // the number of trials to average across.
 
-    measureTime(&selectionSort, Nstart, Nend, Nstep, true, numTrials, true, 
+    measureTime(&selectionSort, Nstart, Nend, Nstep, true, numTrials, true,
                 "ss_sort.dat");
     cout << endl;
 
@@ -372,13 +414,14 @@ int main(int argc, char* argv[]) {
 
     // Timing Trials for _Insertion_ Sort on *RANDOM* Data.
 
-    Nstart = 500;   // the smallest input size to test.
-    Nend = 4000;    // the largest input size to test.
-    Nstep = 100;    // the stride between consecutive input sizes.
-    numTrials = 30; // the number of trials to average across.
+    Nstart = 500;  // the smallest input size to test.
+    Nend = 4000;   // the largest input size to test.
+    Nstep = 100;   // the stride between consecutive input sizes.
+    numTrials = 1; // the number of trials to average across.
 
-    cout << "Timing insertionSort" << endl << endl;
-    measureTime(&insertionSort, Nstart, Nend, Nstep, false, numTrials, true, 
+    cout << "Timing insertionSort" << endl
+         << endl;
+    measureTime(&insertionSort, Nstart, Nend, Nstep, false, numTrials, true,
                 "is_rand.dat");
     cout << endl;
 
@@ -389,7 +432,7 @@ int main(int argc, char* argv[]) {
     Nstep = 2000;   // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    measureTime(&insertionSort, Nstart, Nend, Nstep, true, numTrials, true, 
+    measureTime(&insertionSort, Nstart, Nend, Nstep, true, numTrials, true,
                 "is_sort.dat");
     cout << endl;
 
@@ -399,13 +442,14 @@ int main(int argc, char* argv[]) {
 
     // Timing Trials for _BUBBLE_ Sort on *RANDOM* Data.
 
-    Nstart = 500;   // the smallest input size to test.
-    Nend = 4000;    // the largest input size to test.
-    Nstep = 100;    // the stride between consecutive input sizes.
-    numTrials = 30; // the number of trials to average across.
+    Nstart = 500;  // the smallest input size to test.
+    Nend = 4000;   // the largest input size to test.
+    Nstep = 100;   // the stride between consecutive input sizes.
+    numTrials = 1; // the number of trials to average across.
 
-    cout << "Timing bubbleSort" << endl << endl;
-    measureTime(&bubbleSort, Nstart, Nend, Nstep, false, numTrials, true, 
+    cout << "Timing bubbleSort" << endl
+         << endl;
+    measureTime(&bubbleSort, Nstart, Nend, Nstep, false, numTrials, true,
                 "bs_rand.dat");
     cout << endl;
 
@@ -416,7 +460,7 @@ int main(int argc, char* argv[]) {
     Nstep = 2000;   // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    measureTime(&bubbleSort, Nstart, Nend, Nstep, true, numTrials, true, 
+    measureTime(&bubbleSort, Nstart, Nend, Nstep, true, numTrials, true,
                 "bs_sort.dat");
     cout << endl;
 
@@ -431,8 +475,9 @@ int main(int argc, char* argv[]) {
     Nstep = 1000;   // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    cout << "Timing mergeSort" << endl << endl;
-    measureTime(&mergeSort, Nstart, Nend, Nstep, false, numTrials, false, 
+    cout << "Timing mergeSort" << endl
+         << endl;
+    measureTime(&mergeSort, Nstart, Nend, Nstep, false, numTrials, false,
                 "ms_rand.dat");
     cout << endl;
 
@@ -443,7 +488,7 @@ int main(int argc, char* argv[]) {
     Nstep = 1000;   // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    measureTime(&mergeSort, Nstart, Nend, Nstep, true, numTrials, false, 
+    measureTime(&mergeSort, Nstart, Nend, Nstep, true, numTrials, false,
                 "ms_sort.dat");
     cout << endl;
 
@@ -458,19 +503,20 @@ int main(int argc, char* argv[]) {
     Nstep = 1000;   // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    cout << "Timing quickSort" << endl << endl;
-    measureTime(&quickSort, Nstart, Nend, Nstep, false, numTrials, false, 
+    cout << "Timing quickSort" << endl
+         << endl;
+    measureTime(&quickSort, Nstart, Nend, Nstep, false, numTrials, false,
                 "qs_rand.dat");
     cout << endl;
 
     // Timing Trials for _QUICK_ Sort on *SORTED* Data.
 
-    Nstart = 500;  // the smallest input size to test.
-    Nend = 5000;   // the largest input size to test.
-    Nstep = 200;   // the stride between consecutive input sizes.
+    Nstart = 500;   // the smallest input size to test.
+    Nend = 5000;    // the largest input size to test.
+    Nstep = 200;    // the stride between consecutive input sizes.
     numTrials = 30; // the number of trials to average across.
 
-    measureTime(&quickSort, Nstart, Nend, Nstep, true, numTrials, true, 
+    measureTime(&quickSort, Nstart, Nend, Nstep, true, numTrials, true,
                 "qs_sort.dat");
     cout << endl;
 
