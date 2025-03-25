@@ -74,27 +74,27 @@ vector<int> detectArbitrage(vector<double> &adjMatrix,
     for (int i = 0; i < n; i++)
     {
         // Go through each currency (vertex) in the graph
-        for (int row = 0; row < n; row++)
+        for (int currency_index = 0; currency_index < n; currency_index++)
         {
-            int current = row;
-            double current_distance = distances[current];
+            int current_currency = currency_index;
+            double current_distance = distances[current_currency];
 
             // Iterate through each of the current vertex's neighbors
             // Check if the distance to the neighbor can be updated to be a smaller value based on the current vertex's distance
-            for (int value = 0; value < n; value++)
+            for (int neighbor_index = 0; neighbor_index < n; neighbor_index++)
             {
-                int neighbor = (row * n) + value;
-                double neighbor_distance = distances[value];
-                double edge_length = adjMatrix[neighbor];
+                int neighbor_currency = (current_currency * n) + neighbor_index;
+                double neighbor_distance = distances[neighbor_index];
+                double edge_length = adjMatrix[neighbor_currency];
                 if (neighbor_distance > current_distance + edge_length + tol)
                 {
-                    distances[value] = current_distance + edge_length;
-                    previous[value] = row;
+                    distances[neighbor_index] = current_distance + edge_length;
+                    previous[neighbor_index] = current_currency;
 
                     // Check if an update was made on the nth iteration
                     if (i == n - 1)
                     {
-                        cycle_start = value;
+                        cycle_start = neighbor_index;
                     }
                 }
             }
@@ -109,7 +109,7 @@ vector<int> detectArbitrage(vector<double> &adjMatrix,
         {
             cycle.push_back(cycle_start);
             cycle_start = previous[cycle_start];
-        } while (find(cycle.begin(), cycle.end(), cycle_start) == cycle.end());
+        } while (find(cycle.begin(), cycle.end(), cycle_start) == cycle.end()); // Checks if value is already in the array
         cycle.push_back(cycle_start);
     }
 
